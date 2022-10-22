@@ -1,0 +1,97 @@
+# Common properties
+server: 
+ port: 5004
+ 
+spring: 
+ application: 
+  name: we-shopify-brands-microservice
+ jpa: 
+  hibernate: 
+   ddl-auto: update
+   format-sql: true
+
+# Keeping default profile as dev
+ profiles:
+    active: dev
+#logging Levels - FATAL> ERROR> WARN> INFO> DEBUG> TRACE
+logging:
+ file:
+    # name: we-shopify-logs.logs
+    path: D:\Spring Boot\Spring-Spring-Boot\log-files
+ level: 
+  root: INFO
+ pattern:
+    file: '%d{dd-MMM-yyyy HH:mm:ss, SSS} %-5level %logger{100}-%M-%L - %msg%n'
+    
+ #'%d{dd-MMM-yyyy HH:mm:ss, SSS} %-5level %logger{100}-%M-%L - %msg%n'
+ # timestamp in digit - %d{dd-MMM-yyyy HH:mm:ss, SSS}
+ # %logger{100} - logs nom of charactror
+ # -%M -method
+ # -%L -line number
+ # %msg -message
+ # %n - new line
+#---
+#weshopify: 
+# app: 
+#  search: 
+#   keys: ByEmail,ByMobile,ByUserName
+service: 
+ category: 
+   baseUri: ${CATEGORY_BASE_URI:http://localhost:5003/categories}
+   
+#resilience4j Confiiguration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default: 
+       register-health-indicator: true
+    instances:
+      brand-categories-circuit: 
+       minimum-number-of-calls: 5
+       failure-rate-threshold: 50
+       wait-duration-in-open-state: 30000
+       permitted-number-of-calls-in-half-open-state: 2
+       
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - '*'
+---
+# External database i.e MySql configuration for Dev Env
+spring: 
+ config:
+    activate:
+      on-profile: dev
+ datasource:
+  dbcp2:
+   driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
+  url: jdbc:${DB_TYPE:mysql}://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_SCHEMA:weshopify-brand-ms}
+  username: ${DB_USER_NAME:root}
+  password: ${DB_USER_PASSWORD:root}
+ jpa:
+    properties:
+      hibernate: 
+        dialect: ${DB_DIALECT:org.hibernate.dialect.MySQL8Dialect}
+ 
+---
+# In-memory database configuration for QA Env
+spring: 
+ config:
+    activate:
+      on-profile: qa
+#DataBase console Configuartion
+ h2: 
+  console: 
+   enabled: true
+   path: /h2Console
+
+# In-memory database configuration
+ datasource: 
+  dbcp2: 
+   driver-class-name: org.h2.Driver
+  url: jdbc:h2:mem:we-shopify-app
+  username: 12
+  password: 12
+

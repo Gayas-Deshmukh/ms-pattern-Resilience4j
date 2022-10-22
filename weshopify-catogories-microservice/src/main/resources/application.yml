@@ -1,0 +1,89 @@
+# Common properties
+server: 
+ port: 5003
+ 
+spring: 
+ application: 
+  name: we-shopify-catogories-microservice
+ jpa: 
+  hibernate: 
+   ddl-auto: update
+   format-sql: true
+
+# Keeping default profile as dev
+ profiles:
+    active: dev
+#logging Levels - FATAL> ERROR> WARN> INFO> DEBUG> TRACE
+logging:
+ file:
+    # name: we-shopify-logs.logs
+    path: D:\Spring Boot\Spring-Spring-Boot\log-files
+ level: 
+  root: INFO
+ pattern:
+    file: '%d{dd-MMM-yyyy HH:mm:ss, SSS} %-5level %logger{100}-%M-%L - %msg%n'
+    
+ #'%d{dd-MMM-yyyy HH:mm:ss, SSS} %-5level %logger{100}-%M-%L - %msg%n'
+ # timestamp in digit - %d{dd-MMM-yyyy HH:mm:ss, SSS}
+ # %logger{100} - logs nom of charactror
+ # -%M -method
+ # -%L -line number
+ # %msg -message
+ # %n - new line
+#---
+#weshopify: 
+# app: 
+#  search: 
+#   keys: ByEmail,ByMobile,ByUserName
+file :
+ storage :
+  location : D:\Spring Boot\microservices\imgs
+---
+# External database i.e MySql configuration for Dev Env
+spring: 
+ config:
+    activate:
+      on-profile: dev
+ datasource:
+  dbcp2:
+   driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
+  url: jdbc:${DB_TYPE:mysql}://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_SCHEMA:weshopify-categories-ms}
+  username: ${DB_USER_NAME:root}
+  password: ${DB_USER_PASSWORD:root}
+ jpa:
+    properties:
+      hibernate: 
+        dialect: ${DB_DIALECT:org.hibernate.dialect.MySQL8Dialect}
+# rabbit aq configuration
+---
+spring:
+  rabbitmq:
+    host: moose.rmq.cloudamqp.com
+    port: 5672
+    username: jsgqnese
+    password: OemR8UZFHuu5at1mOVhGcE-KrEF0S3os
+    virtual-host: jsgqnese
+    template:
+      routing-key: weshopify-plateform-routing-key
+      default-receive-queue:  weshopify-plateform-queue
+      exchange: weshopify-plateform-exchange
+---
+# In-memory database configuration for QA Env
+spring: 
+ config:
+    activate:
+      on-profile: qa
+#DataBase console Configuartion
+ h2: 
+  console: 
+   enabled: true
+   path: /h2Console
+
+# In-memory database configuration
+ datasource: 
+  dbcp2: 
+   driver-class-name: org.h2.Driver
+  url: jdbc:h2:mem:we-shopify-app
+  username: 12
+  password: 12
+
