@@ -41,6 +41,12 @@ service:
    
 #resilience4j Confiiguration
 resilience4j:
+  retry:
+    instances:
+      brand-category-retry: 
+       max-attempts: 3
+       wait-duration: 3s
+       
   circuitbreaker:
     configs:
       default: 

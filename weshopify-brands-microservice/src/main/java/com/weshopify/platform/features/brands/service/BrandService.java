@@ -79,6 +79,7 @@ public class BrandService {
 		//Set<Category> catset = brandDomain.getCategories();
 		List<String> catOriginalData = new ArrayList<>();
 		String catset = brandDomain.getCategories();
+		log.info("invoking category service...");
 		
 		if (catset != null) 
 		{
