@@ -26,6 +26,7 @@ import com.weshopify.platform.features.brands.exceptions.BrandNotFoundException;
 import com.weshopify.platform.features.brands.service.BrandService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,7 +113,8 @@ public class BrandResource {
 	
 	@GetMapping("/brands/{id}")
 	//@CircuitBreaker(name = "brand-categories-circuit" , fallbackMethod ="getCategoryFallBack")
-	@Retry(name = "brand-category-retry",fallbackMethod = "getCategoryFallBack" )
+	//@Retry(name = "brand-category-retry",fallbackMethod = "getCategoryFallBack" )
+	@RateLimiter(name = "brand-category-rate-limiter", fallbackMethod ="getCategoryFallBack" )
 	public ResponseEntity<Object> getBrand(@PathVariable(name = "id") Integer id)
 	{
 		BrandBean brand = brandService.get(id);
